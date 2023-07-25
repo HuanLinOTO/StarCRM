@@ -1,5 +1,3 @@
-import * as echarts from "echarts";
-
 const baseLine1 = {
   type: "line",
   smooth: true,

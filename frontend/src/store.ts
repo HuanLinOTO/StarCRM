@@ -2,7 +2,6 @@ import { defineStore } from 'pinia'
 
 import { ref, computed } from 'vue'
 import { userDB } from '../../backend/db/types'
-import settings from './api/settings'
 
 const defaultUserState = {
     id: 0,
@@ -18,13 +17,18 @@ export const useLoginStore = defineStore('login', () => {
     const isLogin = computed(()=>Boolean(token.value))
     // console.log(token.value,isLogin.value);
     
+    // @ts-ignore
     const user = ref<userDB>(structuredClone(defaultUserState))
 
-    function setUser(newUserer: userDB) {
+    function setUser(
+        newUserer: userDB) {
+        // @ts-ignore
         user.value = newUserer
     }
 
     function unsetUser() {
+        // @ts-ignore
+
         user.value = structuredClone(defaultUserState)
         token.value = ""
     }

@@ -1,4 +1,4 @@
-import { poolDB, userDB } from "./../../../backend/db/types.d";
+import { userDB } from "./../../../backend/db/types.d";
 import axios from "./axios";
 
 export type CommonUserResponse = { code: 0 | -1 | -2; msg: string };

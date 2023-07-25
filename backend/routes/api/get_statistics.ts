@@ -1,6 +1,6 @@
 import useDB from "../../db/useDB";
 import isSameDay from "../../utils/isSameDay";
-
+import { getQuery } from "h3"
 export interface Params {
     today?: boolean,
     date?: number,
@@ -40,7 +40,9 @@ export default eventHandler(async (event) => {
     })
     
     if(params.oid) {
+        // @ts-ignore
         data.contribution.creation = data.creation.filter(item => item.operator === params.oid).length
+        // @ts-ignore
         data.contribution.sign = data.sign.filter(item => item.operator === params.oid).length
     }
     return {

@@ -1,0 +1,61 @@
+name: Build and Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_and_release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+
+      - name: Install Frontend Dependencies
+        working-directory: frontend
+        run: yarn install
+
+      - name: Build Frontend
+        working-directory: frontend
+        run: yarn build
+
+      - name: Install Backend Dependencies
+        working-directory: backend
+        run: yarn install
+
+      - name: Build Backend
+        working-directory: backend
+        run: yarn build
+
+      - name: Archive Backend Output
+        run: zip -r backend_output.zip backend/.output
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          P_TOKEN: ${{ secrets.P_TOKEN }}
+        with:
+          tag_name: v${{ github.run_number }}
+          release_name: Release v${{ github.run_number }}
+          body: 'Release v${{ github.run_number }}'
+          draft: false
+          prerelease: false
+
+      - name: Upload Backend Output
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          P_TOKEN: ${{ secrets.P_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./backend_output.zip
+          asset_name: backend_output.zip
+          asset_content_type: application/zip
