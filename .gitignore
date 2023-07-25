@@ -1,0 +1,6 @@
+backend/.data.db
+backend/settings.json
+backend.zip
+.idea
+backend/node_modules
+frontend/node_modules

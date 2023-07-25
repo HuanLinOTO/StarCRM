@@ -1,0 +1,17 @@
+{
+  "private": true,
+  "scripts": {
+    "dev": "npx nitropack dev",
+    "build": "npx nitropack build",
+    "preview": "node .output/server/index.mjs"
+  },
+  "dependencies": {
+    "@minatojs/driver-sqlite": "^3.5.6",
+    "fs-extra": "^11.1.1",
+    "minato": "^2.3.2",
+    "nitropack": "latest"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.1"
+  }
+}
