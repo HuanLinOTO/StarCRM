@@ -5,3 +5,5 @@ backend.zip
 backend/node_modules
 frontend/node_modules
 backend/public/**/*
+frontend/yarn.lock
+backend/yarn.lock
