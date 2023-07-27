@@ -2,7 +2,7 @@
   <el-dialog
     v-model="(props.dialogVisible as boolean)"
     :title="props.isCreate?'创建客户':'编辑客户'"
-
+    :show-close="false"
     :close-on-press-escape="false"
     :close-on-click-modal="false"
   >
@@ -10,8 +10,11 @@
       <el-form-item label="公司全称">
         <el-input v-model="form.name"></el-input>
       </el-form-item>
+      <el-form-item label="跟进内容">
+        <el-input v-model="form.contactContent" type="textarea" :autosize="{ minRows: 2, maxRows: 4 }"></el-input>
+      </el-form-item>
       <el-button @click="addContactNum" size="small">增加联系方式</el-button>
-      <el-button @click="reduceContactNum" size="small">减少联系方式</el-button>
+      <el-button @click="reduceContactNum" size="small">删除联系方式</el-button>
       <template v-for="i in contactNum">
         <el-form-item label="联系工具">
           <!-- @vue-ignore -->
@@ -108,6 +111,21 @@
             </span>
           </el-option>
         </el-select>
+    </el-form-item>
+    <el-form-item label="意向产品">
+      <el-autocomplete
+        v-model="form.production"
+        :fetch-suggestions="(query: string, cb: any) => {
+          const result = ['HR','社保']
+            .map((item: any) => ref(item))
+            .filter((item: any) => item.value.includes(query));
+          // console.log(result);
+          cb(result);
+        }"
+        clearable
+        class="inline-input w-50"
+        placeholder="可输入其他的"
+      />
     </el-form-item>
     <h3>预览(发生变更后此处为元数据)</h3>
     <el-auto-resizer>

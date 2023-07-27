@@ -24,9 +24,11 @@ export default async () => {
         id: "integer",
         name: "char",
         contact: "text",
+        contactContent: "text",
         owner: "integer",
         status: "char",
         learnFrom: "char",
+        production: "char",
         lastOperateTime: "timestamp"
     })
     database.extend("statistics.creation", {

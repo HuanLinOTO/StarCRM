@@ -100,8 +100,8 @@ const getData = async () => {
   data.value = (await user.getUser("all")).users.map(
     (item: userDB & { allData: userDB }) => {
       item.allData = structuredClone(item);
-      item.password = "******";
-      item.token = item.token.substring(0, 4) + "******";
+      // item.password = "******";
+      // item.token = item.token.substring(0, 4) + "******";
       return item;
     }
   );

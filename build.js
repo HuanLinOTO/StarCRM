@@ -19,6 +19,10 @@ exec(`${yarnCommand} build`, { cwd: 'frontend' }, (error, stdout, stderr) => {
   }
 
   console.log('Frontend build successful.');
+  // 检查 backend/public 是否存在，不存在就mkdir
+  if (!fs.existsSync(backendPublicPath)) {
+    fs.mkdirSync(backendPublicPath);
+  }
 
   // 2. 移动 frontend/dist 下的所有文件到 backend/public
   fs.readdir(frontendDistPath, (err, files) => {
@@ -52,6 +56,9 @@ exec(`${yarnCommand} build`, { cwd: 'frontend' }, (error, stdout, stderr) => {
         }
 
         console.log('Backend build successful.');
+        // 删掉 backend/public 
+        fs.rmdirSync(backendPublicPath, { recursive: true });
+        
       });
     }
   });

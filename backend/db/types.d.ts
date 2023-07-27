@@ -25,14 +25,18 @@ export interface Contact {
   ContactContent: string;
 }
 
+export type Production = "HR" | "SocialSecurity" | string
+
 export interface poolDB {
   id: number;
   name: string; // 公司全称
   contact: string;
+  contactContent: string;
   owner: number; // 认领人 id，-1 表示公有
   status: Status | string; // 是否有意向
   learnFrom: LearnFrom | string;
   lastOperateTime: Date;
+  production: Production;
 }
 
 export interface creationStatisticsDB {

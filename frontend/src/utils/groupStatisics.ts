@@ -5,13 +5,14 @@ interface Item {
   cid: any;
 }
 
-export default function groupByDay(items: Item[]): Record<string, Item[]> {
+export default function groupByDay(items: Item[], isStringTime: boolean = false): Record<string, Item[]> {
   const result: Record<string, Item[]> = {};
   for (const item of items) {
     const date = new Date(item.date);
     // console.log(date.getDate(),"date");
     
-    const day = date.getFullYear() + date.getMonth() + 1 + date.getDate();
+    const day = isStringTime?`${date.getFullYear()}-${date.getMonth()+ 1}-${date.getDate()}`
+                            : date.getFullYear() + date.getMonth() + 1 + date.getDate();
     if (!result[day]) {
       result[day] = [];
     }

@@ -19,7 +19,7 @@ export default {
     //   title: "联系内容",
     //   width: 150,
     // },
-    // { key: "owner", dataKey: "owner", title: "所有者", width: 150 },
+    { key: "production", dataKey: "production", title: "意向产品", width: 150 },
     {
       key: "status",
       dataKey: "status",

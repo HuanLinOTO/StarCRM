@@ -2,6 +2,7 @@
   <el-dialog
     v-model="(props.dialogVisible as boolean)"
     :title="props.isCreate ? '创建用户' : '编辑用户'"
+    :show-close="false"
     :close-on-press-escape="false"
     :close-on-click-modal="false"
   >
@@ -62,6 +63,7 @@
     </el-auto-resizer>
     <!-- <el-button type="primary" @click="">Close</el-button></el-button> -->
     <template #footer>
+      <el-text type="danger">请注意如果没有修改一定要点取消！！</el-text>
       <span class="dialog-footer">
         <el-button @click="callback({ isCancel: true, data: form })"
           >取消</el-button

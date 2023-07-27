@@ -1,11 +1,59 @@
 <template>
     <el-button @click="addCustomer">添加客户</el-button>
+    <el-collapse accordion style="margin: 10px">
+      <el-collapse-item title="筛选" name="1">
+        <!-- <el-text>筛选</el-text> -->
+        <!-- <el-select v-model="value" placeholder="请选择"> -->
+        <el-select placeholder="客户状态" v-model="filter.status">
+          <el-option
+            v-for="(value, key) in e2c.Status"
+            :key="key"
+            :label="value"
+            :value="key"
+          />
+        </el-select>
+        <br />
+        <el-autocomplete
+          v-model="filter.name"
+          :fetch-suggestions="getComName"
+          clearable
+          style="margin-top: 10px"
+          placeholder="公司名称"
+        />
+        <br />
+        <el-autocomplete
+          v-model="filter.production"
+          :fetch-suggestions="getByProduction"
+          clearable
+          style="margin-top: 10px"
+          placeholder="意向产品"
+        />
+        <br />
+        <el-button
+          type="danger"
+          size="small"
+          style="margin-top: 10px"
+          @click="() => ((filter.status = undefined), (filter.name = undefined), filter.production = undefined)"
+          >清空筛选条件</el-button
+        >
+      </el-collapse-item>
+    </el-collapse>
     <div class="container">
       <el-auto-resizer>
         <template #default="{ width }">
+          <el-pagination
+            small
+            background
+            layout="prev, pager, next"
+            :total="c_data.length"
+            :page-size=100
+            v-model:current-page="currentPage"
+            class="mt-4"
+          />
           <el-table-v2
+            cache="10"
             :columns="columns"
-            :data="data"
+            :data="current_data"
             :width="width"
             :height="800"
             fixed
@@ -23,7 +71,7 @@
   </template>
   
   <script lang="tsx" setup>
-  import { h, ref, MaybeRef, toRaw } from "vue";
+  import { h, ref, MaybeRef, toRaw, reactive, computed } from "vue";
   // import user from "../api/user";
   import { useLoginStore } from "../store";
   import { poolDB } from "./../../../backend/db/types.d";
@@ -57,6 +105,14 @@
       getData()
     }
   });
+
+  
+  const currentPage = ref(1)
+
+  const current_data = computed(() => {
+    return c_data.value.slice((currentPage.value - 1) * 100, currentPage.value * 100)
+  })
+
   
   const addCustomer = () => {
     editor.value.defaultData = { owner: store.user.id };
@@ -92,6 +148,56 @@
   
   const data = ref<poolDB[] & any>([]);
   
+  const c_data = computed(() => {
+    var tmp = data.value;
+    // console.log(tmp);
+
+    if (filter.name) {
+      tmp = tmp.filter((item: any) => item.name.includes(filter.name));
+    }
+    if (filter.status) {
+      tmp = tmp.filter((item: any) => item.allData.status == filter.status);
+    }
+    if (filter.production) {
+      tmp = tmp.filter((item: any) => item.allData.production == filter.production);
+    }
+    console.log(tmp);
+
+    return tmp;
+  });
+
+  const filter = reactive({
+    status: undefined,
+    name: undefined,
+    production: undefined,
+  });
+
+  const getComName = (query: string, cb: any) => {
+  const result = data.value
+    .map((item: any) => ref(item.name))
+    .filter((item: any) => item.value.includes(query));
+  console.log(result);
+
+  cb(result);
+};
+
+const getByProduction = (query: string, cb: any) => {
+  // function unique (arr) {
+  //   return Array.from(new Set(arr))
+  // }
+  // console.log(Array.from(new Set(data.value)));
+
+  const result = Array.from(
+    new Set(data.value.map((item: any) => item.production))
+  )
+    .filter((item: any) => item.includes(query))
+    .map((item: any) => ref(item))
+  // console.log(Array.from(new Set(result)));
+
+  cb(result);
+};
+
+
   const getData = async () => {
     data.value = await pool.getAll();
     // console.log(toRaw(data.value),"raw");

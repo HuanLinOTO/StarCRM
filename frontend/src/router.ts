@@ -1,4 +1,4 @@
-import { Router, createRouter, createWebHistory } from "vue-router";
+import { Router, createRouter, createWebHashHistory } from "vue-router";
 
 // import Accounts from "./pages/accounts.vue"
 // import Default from './pages/default.vue'
@@ -35,7 +35,7 @@ let router: Router;
 export default (pinia: Pinia) => {
   if (!router) {
     router = createRouter({
-      history: createWebHistory(),
+      history: createWebHashHistory(),
       routes, // `routes: routes` 的缩写
     });
 

@@ -13,7 +13,7 @@ export default async (name: string, password: string) => {
   } else {
     const token = randstr(32);
 
-    db.set("users", { id: user[0].id }, { token });
+    await db.set("users", { id: user[0].id }, { token });
     console.log(`User ${user[0].name} logged in. Token: ${token}`);
     user[0].token = token;
     return { code: 0, msg: "登陆成功", token, user: user[0] };

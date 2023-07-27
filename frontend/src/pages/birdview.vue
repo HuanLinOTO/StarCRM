@@ -1,7 +1,7 @@
 <template>
-  <el-alert v-if="isShowWarning" title="提醒" type="warning" style="margin-top: 10px;">
+  <el-alert v-if="isShowWarning" title="提醒" type="error"  style="margin-top: 10px;margin-bottom: 10px;">
     <div style="font-size: 35px;font-weight: bold;">
-      即将下班，当前任务还剩 {{ serverSettings.dailyCreation - statistics.today.contribution.creation }} 个入库
+      加油，你是最棒的，今日还有 {{ Math.max(0,userDaliyCreation - statistics.today.contribution.creation) }} 个哦！
     </div>
   </el-alert>
   <el-row :gutter="20" style="margin-bottom: 20px;">
@@ -98,7 +98,7 @@
           <template #suffix>/settings.dailyCreation</template>
         </el-statistic> -->
         <!-- percentage 省略小数点后两位 -->
-        <el-progress type="circle" :percentage="Number((statistics.today.contribution.creation/serverSettings.dailyCreation).toFixed(2))" />
+        <el-progress type="circle" :percentage="Number((statistics.today.contribution.creation/userDaliyCreation).toFixed(2))*100" />
         <br>
         <el-text size="small">每日入库</el-text>
         <br>
@@ -114,6 +114,25 @@
           <!-- <template #suffix>/NaN</template> -->
         </el-statistic>
         <el-divider />
+        <el-popover
+          ref="popover"
+          title="扩展设置"
+          :width="500"
+          trigger="contextmenu"
+          content="this is content, this is content, this is content"
+        >
+          <template #reference>
+            <el-button type="primary" @click="exportReport" v-if="store.user.role == 'admin'">导出报告</el-button>
+            <!-- <el-button class="m-2">contextmenu to activate</el-button> -->
+          </template>
+          <el-date-picker
+            v-model="reportDate"
+            type="datetimerange"
+            range-separator="To"
+            start-placeholder="Start date"
+            end-placeholder="End date"
+          />
+        </el-popover>
       </el-card>
     </el-col>
   </el-row>
@@ -127,17 +146,15 @@ import * as echarts from "echarts"
 import { chartOptions, baseLine1, baseLine2, chartOptions2 } from "../utils/chartOptions"
 import groupStatisics from "../utils/groupStatisics"
 import user from "../api/user";
-import settings from "../api/settings";
+import exportReport from "../utils/exportReport";
 const store = useLoginStore();
 
-var serverSettings = reactive({
-  dailyCreation: 0
-})
+var userDaliyCreation = ref(0)
 
 const getSettings = async () => {
-  
-  serverSettings = await settings.getSettings()
-  console.log("读取到云端配置",serverSettings);
+  // @ts-ignore
+  userDaliyCreation.value = (await user.getUser(store.token)).dailyCreation
+  console.log("读取到云端配置",userDaliyCreation);
 }
 
 getSettings()
@@ -156,6 +173,7 @@ function isTimeBetween5and630(): boolean {
   return hours === 17 && minutes >= 0 || hours === 18 && minutes <= 30 || hours > 17 && hours < 18;
 }
 
+const reportDate = ref()
 
 const isShowWarning = computed(isTimeBetween5and630)
 
@@ -215,7 +233,7 @@ const getData = async () => {
   };
   
   // @ts-ignore
-  const users = new Map((await user.getUser("all")).users.map((user) => [user.id, user.name]));
+  const users = new Map((await user.getUser("name")).users.map((user) => [user.id, user.name]));
 
   var memberContribution: any = {}
   statistics.all.creation.map(item => {

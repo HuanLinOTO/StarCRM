@@ -1,5 +1,7 @@
+import { use } from "echarts";
 import { poolDB } from "../../../backend/db/types";
 import axios from "./axios";
+import { useLoginStore } from "../store";
 
 export default {
   async getPrivate(token: string): Promise<poolDB[]> {
@@ -23,7 +25,12 @@ export default {
     return (await axios.get("get_public")).data;
   },
   async getAll(): Promise<poolDB[]> {
-    const data = (await axios.get("get_all_customer")).data
+    const store = useLoginStore()
+    const data = (await axios.get("get_all_customer", {
+      params: {
+        token: store.token
+      }
+    })).data
     // 将 data.contact 中的奇数项为 contactContent 偶数 为
     return data;
   },

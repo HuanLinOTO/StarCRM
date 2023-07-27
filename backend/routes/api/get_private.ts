@@ -11,4 +11,3 @@ export default eventHandler(async (event) => {
     if(!params.token) return { code: -1, msg: "缺少 token 参数" }
     return await getPrivate(params.token);
 });
-    

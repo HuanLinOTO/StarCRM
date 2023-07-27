@@ -42,7 +42,11 @@ checkLogin();
         <span class="header-title"> 润才 RCM </span>
       </div> -->
       <el-menu class="el-menu-demo" mode="horizontal" :ellipsis="false">
-        <el-menu-item>润才 RCM</el-menu-item>
+        <el-menu-item style="font-size: 22px;color: #e47817;font-weight: bold;">
+          <img src="../public/logo.ico" height="50" style="border-radius: 66px;margin-right: 7px;" alt="">
+          客户管理系统
+
+        </el-menu-item>
         <div class="flex-grow" />
         <el-menu-item @click="logout">
           <!-- <el-button>aaa</el-button> -->
@@ -70,11 +74,11 @@ checkLogin();
           </el-menu-item>
         </router-link>
         <template v-if="store.user.role == 'admin'">
-          <el-divider content-position="left" style="margin: 0; z-index: 10"
-            ><div style="font-size: 8px; color: grey; background: none">
+          <el-divider content-position="left" style="margin: 0; z-index: 10">
+            <div style="font-size: 8px; color: grey; background: none">
               管理员
-            </div></el-divider
-          >
+            </div>
+          </el-divider>
           <router-link to="/user" class="rlink">
             <el-menu-item index="4">
               <span class="rlink">用户管理</span>
@@ -85,11 +89,11 @@ checkLogin();
               <span class="rlink">客户管理</span>
             </el-menu-item>
           </router-link>
-          <router-link to="/settings" class="rlink">
+          <!-- <router-link to="/settings" class="rlink">
             <el-menu-item index="5">
               <span class="rlink">设置</span>
             </el-menu-item>
-          </router-link>
+          </router-link> -->
 
         </template>
       </el-menu>

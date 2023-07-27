@@ -1,3 +1,4 @@
+import { useLoginStore } from "../store";
 import { userDB } from "./../../../backend/db/types.d";
 import axios from "./axios";
 
@@ -15,24 +16,28 @@ export type LoginResponse = {
 } & CommonUserResponse;
 
 export default {
-  async login(name: string, password: string): Promise<LoginResponse> {
+  async login(name: string, password: string, captcha: string, ctoken: string): Promise<LoginResponse> {
     return (
       await axios.get("/login", {
         params: {
           name,
           password,
+          captcha,
+          ctoken
         },
       })
     ).data;
   },
 
   async addUser(name: string, password: string, role: "admin" | "user"): Promise<CommonUserResponse> {
+    const store = useLoginStore()
     return (
       await axios.get("/add_user", {
         params: {
           name,
           password,
-          role
+          role,
+          token: store.token
         },
       })
     ).data;
@@ -44,11 +49,15 @@ export default {
     | { users: userDB[]; found: true })
     | { found: false }
   > {
+    var params: any = { token }
+    if(token == "all") {
+      const store = useLoginStore()
+      params.admin_token = store.token
+      console.log("GetAll", store.token, params)
+    } 
     return (
       await axios.get("get_user", {
-        params: {
-          token,
-        },
+        params
       })
     ).data;
   },
@@ -61,4 +70,7 @@ export default {
       })
     ).data;
   },
+  async getCaptcha() {
+    return (await axios.get("get_captcha")).data
+  }
 };

@@ -1,5 +1,6 @@
 body {
   margin: 0;
+  overflow: hidden;
 }
 .el-page-header__header {
   height: 60px;

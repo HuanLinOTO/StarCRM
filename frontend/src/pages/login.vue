@@ -7,6 +7,11 @@
       <el-form-item label="密码">
         <el-input type="password" v-model="form.password" />
       </el-form-item>
+      <el-form-item label="验证码">
+        <el-input v-model="form.captcha" />
+        <div @click="getCaptcha" v-html="captchaIMG">
+        </div>
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit">提交</el-button>
       </el-form-item>
@@ -30,14 +35,24 @@ const router = useRouter()
 //   password: "",
 // });
 
+const captchaIMG = ref<string>("")
+const captchaToken = ref<string>("")
+const getCaptcha = async () => {
+  const data = await user.getCaptcha()
+  captchaIMG.value = data.img
+  captchaToken.value = data.token
+}
+getCaptcha()
+
 // do not use same name with ref
 const form = ref({
   name: "",
   password: "",
+  captcha: "",
 });
 
 const onSubmit = async () => {
-  const result = await user.login(form.value.name, form.value.password);
+  const result = await user.login(form.value.name, form.value.password, form.value.captcha, captchaToken.value);
   const { code, msg, token } = result;
   if (code !== 0) {
     console.log(msg);
