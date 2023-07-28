@@ -14,6 +14,7 @@ export default eventHandler(async (event) => {
     if (
       !params.name ||
       !params.contact ||
+      !params.contactContent ||
       !params.owner ||
       !params.status ||
       !params.learnFrom ||

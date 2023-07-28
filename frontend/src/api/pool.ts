@@ -50,7 +50,7 @@ export default {
     });
     return data;
   },
-  async addCustomer(params: poolDB & { token: string }) {
+  async addCustomer(params: poolDB & { token?: string }) {
     params.contact = JSON.stringify(params.contact)
     params.token = useLoginStore().token as string
     const { data } = await axios.get("/add_customer", {

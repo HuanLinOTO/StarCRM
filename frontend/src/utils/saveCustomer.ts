@@ -18,13 +18,13 @@ export default async () => {
     // console.log(Math.max(...data));
     const maxContacts = Math.max(...data)
     // console.log(maxContacts);
-    const header = `id,公司全称,意向产品,跟进内容,意向状态,客户来源,${generateContactArray(maxContacts).join(",")}\n`
+    const header = `id,所属业务员,公司全称,意向产品,跟进内容,意向状态,客户来源,${generateContactArray(maxContacts).join(",")}\n`
     var content = ""
     for (let customer of customers) {
         // customer.contactMethod = e2c.ContactMethod[customer.contactMethod];
         customer.learnFrom = e2c.LearnFrom[customer.learnFrom];
         customer.status = e2c.Status[customer.status];
-        content += `${customer.id},${customer.name},${customer.production},${customer.contactContent},${customer.status},${customer.learnFrom},${(customer.contact as any as Array<{contactMethod: string,contactContent: string}>).map(item => item.contactMethod + "," + item.contactContent).join(",")}\n`
+        content += `${customer.id},${customer.owner},${customer.name},${customer.production},${customer.contactContent},${customer.status},${customer.learnFrom},${(customer.contact as any as Array<{contactMethod: string,contactContent: string}>).map(item => e2c.ContactMethod[item.contactMethod] + "," + item.contactContent).join(",")}\n`
     }
     saveCSV(header+content,"客户信息")
 }
