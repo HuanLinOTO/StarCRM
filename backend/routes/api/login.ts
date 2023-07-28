@@ -1,5 +1,4 @@
-import useDB from "../../db/useDB"
-import user from "../../db/user";
+import verify from "../../db/user/verify";
 
 interface Params {
     name: string,
@@ -17,5 +16,5 @@ export default eventHandler(async (event) => {
     // console.log(captcha_token);
     
     if(!captcha_token || params.captcha !== captcha_token) return { code: -1, msg: "验证码错误" }
-    return await user.verify(params.name,params.password)
+    return await verify(params.name,params.password)
 });

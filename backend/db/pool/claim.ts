@@ -7,16 +7,21 @@ import useDB from "../useDB";
 import getUser from "../user/getUser";
 
 export interface ClaimParams {
-    token: string,
-    cid: number
+  token: string,
+  cid: number
 }
 
 export default async (params: ClaimParams) => {
   const db = await useDB();
   const { token, cid } = params;
+  console.log(params);
+  
   const user = await getUser(token)
   if(!user.found) return { code: -1, msg: "用户不存在或者token过期" }
-  const { id } = user;
+  // @ts-ignore
+  const { id } = user as (poolDB & { found: boolean });
+  console.log(id);
+  
   db.set("pool",{ id: cid }, { owner: id });
   return { code: 0, msg: "认领客户成功" };
 };

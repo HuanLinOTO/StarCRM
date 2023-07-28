@@ -31,6 +31,7 @@ export default eventHandler(async (event) => {
     name: params.name,
     contact: params.contact,
     owner: params.owner,
+    production: params.production,
     status: params.status as Status,
     learnFrom: params.learnFrom as LearnFrom,
     lastOperateTime: new Date()

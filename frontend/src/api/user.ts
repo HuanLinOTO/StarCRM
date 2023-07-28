@@ -6,13 +6,7 @@ export type CommonUserResponse = { code: 0 | -1 | -2; msg: string };
 
 export type LoginResponse = {
   token?: string;
-  user: {
-    id: number;
-    name: string;
-    password: string;
-    token: string;
-    role: "admin" | "user";
-  };
+  user: userDB;
 } & CommonUserResponse;
 
 export default {
@@ -29,7 +23,7 @@ export default {
     ).data;
   },
 
-  async addUser(name: string, password: string, role: "admin" | "user"): Promise<CommonUserResponse> {
+  async addUser(name: string, password: string, role: "admin" | "user" | "bot"): Promise<CommonUserResponse> {
     const store = useLoginStore()
     return (
       await axios.get("/add_user", {

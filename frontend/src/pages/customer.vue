@@ -55,7 +55,7 @@
             :columns="columns"
             :data="current_data"
             :width="width"
-            :height="800"
+            :height="600"
             fixed
           />
         </template>
@@ -115,7 +115,7 @@
 
   
   const addCustomer = () => {
-    editor.value.defaultData = { owner: store.user.id };
+    editor.value.defaultData = { owner: store.user.id, contact: [] };
     editor.value.isCreate = true
     editor.value.dialogVisible = true
   }

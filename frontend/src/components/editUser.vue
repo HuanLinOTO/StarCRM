@@ -46,6 +46,18 @@
               User
             </span>
           </el-option>
+          <el-option value="bot">
+            <span style="float: left">机器人</span>
+            <span
+              style="
+                float: right;
+                color: var(--el-text-color-secondary);
+                font-size: 13px;
+              "
+            >
+              Bot
+            </span>
+          </el-option>
         </el-select>
       </el-form-item>
     </el-form>

@@ -62,7 +62,7 @@
           :columns="columns"
           :data="current_data"
           :width="width"
-          :height="800"
+          :height="600"
           fixed
         />
       </template>

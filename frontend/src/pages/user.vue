@@ -42,7 +42,8 @@ var editor = ref({
     // console.log(params.data,params.isCancel,params.isCreate);
     if(params.isCancel) return;
     console.log(params.data);
-  
+    console.log(params.isCreate);
+    
     if(params.isCreate) {
       // TODO: create customer
       const result = await user.addUser(params.data.name,params.data.password,params.data.role) as any;
@@ -80,6 +81,7 @@ const columns = [
           onClick: async () => {
             console.log(666);
             editor.value.defaultData = cellData
+            editor.value.isCreate = false
             editor.value.dialogVisible = true
             //   const result = await pool.claim({ token: store.token as string, cid: cellData.id as number });
             //   if(result.code != 0) ElMessage.error(result.msg)

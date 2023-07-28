@@ -31,6 +31,7 @@ export default async (reportDate: [Date,Date]) => {
     // 通过统计api获取每个用户的所有统计数据
     const allUserStats = await Promise.all(
         allUsers.map(async (user) => {
+            if(user.role == "bot") return;
             const { data } = await statistics({
                 oid: user.id,
                 data2: true
@@ -62,12 +63,14 @@ export default async (reportDate: [Date,Date]) => {
 
     
     for (const i in allUsers) {
-        name2stats[allUsers[i].name] = allUserStats[i]
+        if(allUsers[i].role != "bot")
+            name2stats[allUsers[i].name] = allUserStats[i]
     }
     console.log(name2stats);
     
     // @ts-ignore
     for (const username in name2stats) {
+        // if(!name2stats[username]) continue;
         var userstats = name2stats[username].creation
         for (const key in userstats) {
             if(!dayIsAlive[key]) {
@@ -104,7 +107,7 @@ export default async (reportDate: [Date,Date]) => {
     var csvContent = `账户名,${dayArray.join(",")},额定任务,任务完成率,总签约数\n`
     for (const name in creationResult) {
         // console.log(Object.keys(name2stats[name].sign));
-        
+        // if()
         csvContent += `${name},${creationResult[name].join(",")},${name2stats[name].dailyCreation},${Number((sum(creationResult[name])/name2stats[name].dailyCreation).toFixed(2)) * 100}%,${Object.keys(name2stats[name].sign).length}\n`
     }
     saveCSV(csvContent,"报表")

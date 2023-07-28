@@ -12,7 +12,7 @@ export interface userDB {
   name: string;
   password: string;
   token: string;
-  role: "admin" | "user"; 
+  role: "admin" | "user" | "bot"; 
   dailyCreation: number;
 }
 
