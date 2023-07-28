@@ -10,7 +10,7 @@ export default async () => {
         database = new Database();
         await database.connect('sqlite',{
             path: pres(".data.db")
-        })
+        })  
     }
     database.extend("users", {
         id: "integer",

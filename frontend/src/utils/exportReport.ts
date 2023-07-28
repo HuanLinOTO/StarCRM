@@ -3,14 +3,14 @@ import statistics from "../api/statistics"
 import user from "../api/user"
 import groupStatisics from "./groupStatisics"
 
-const saveCSV = (csvContent: string) => {
+export const saveCSV = (csvContent: string, filename: string = "") => {
     var blob = new Blob([new Uint8Array([0xef, 0xbb, 0xbf]), csvContent], {
         type: "text/csv;charset=GBK",
     });
     var link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
     // 设定下载文件名字为 润才RCM-YYYY/MM/DD.csv
-    link.download = `润才RCM-${new Date().toLocaleDateString().replace(/\//g, "-")}.csv`;
+    link.download = `润才CRM-${filename}-${new Date().toLocaleDateString().replace(/\//g, "-")}.csv`;
     link.click(); // 触发下载动作
 }
 
@@ -22,7 +22,7 @@ const sum = (arr: number[]): number => {
     return _sum
 }
 
-export default async () => {
+export default async (reportDate: [Date,Date]) => {
     const { users: allUsers } = await user.getUser("all") as { users: userDB[] }
     
     var max_ncreation = 0
@@ -32,12 +32,19 @@ export default async () => {
     const allUserStats = await Promise.all(
         allUsers.map(async (user) => {
             const { data } = await statistics({
-                oid: user.id
+                oid: user.id,
+                data2: true
             })
             // @ts-ignore
-            const creation = groupStatisics(data.creation,true)
+            const creation = groupStatisics(data.creation.filter((item) => {
+                // 判断时间是否在 reportDate 的范围内
+                return item.date >= reportDate[0] && item.date <= reportDate[1]
+            }),true)
             // @ts-ignore
-            const sign = groupStatisics(data.sign,true)
+            const sign = groupStatisics(data.sign.filter((item) => {
+                // 判断时间是否在 reportDate 的范围内
+                return item.date >= reportDate[0] && item.date <= reportDate[1]
+            }),true)
             max_ncreation = Math.max(max_ncreation, Object.keys(creation).length)
             max_nsign = Math.max(max_nsign, Object.keys(sign).length)
             return {
@@ -100,7 +107,7 @@ export default async () => {
         
         csvContent += `${name},${creationResult[name].join(",")},${name2stats[name].dailyCreation},${Number((sum(creationResult[name])/name2stats[name].dailyCreation).toFixed(2)) * 100}%,${Object.keys(name2stats[name].sign).length}\n`
     }
-    saveCSV(csvContent)
+    saveCSV(csvContent,"报表")
     // debugger
     console.log(csvContent)
     console.log(name2stats);

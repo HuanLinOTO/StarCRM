@@ -4,7 +4,8 @@ import { getQuery } from "h3"
 export interface Params {
     today?: boolean,
     date?: number,
-    oid?: number
+    oid?: number,
+    data2?: boolean
 }
 
 export default eventHandler(async (event) => {
@@ -14,6 +15,7 @@ export default eventHandler(async (event) => {
     if(params.today) params.today = true;
     if(params.date) params.date = Number(params.date);
     if(params.oid) params.oid = Number(params.oid);
+    if(params.data2) params.data2 = Boolean(params.data2);
     const data = {
         creation: await db.get("statistics.creation", {}),
         sign: await db.get("statistics.sign", {}),
@@ -32,12 +34,12 @@ export default eventHandler(async (event) => {
         // @ts-ignore
         item.date = item.date.getTime()
         return item;
-    })
+    }).filter(item => !params.data2 || item.operator == params.oid)
     data.sign = data.sign.map(item => {
         // @ts-ignore
         item.date = item.date.getTime()
         return item;
-    })
+    }).filter(item => !params.data2 || item.operator == params.oid)
     
     if(params.oid) {
         // @ts-ignore

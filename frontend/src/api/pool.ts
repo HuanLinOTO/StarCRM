@@ -18,19 +18,28 @@ export default {
       item.contact = JSON.parse(item.contact)
       return item
     })
-    console.log(data);
+    // console.log(data);
     return data;
   },
   async getPublic(): Promise<poolDB[]> {
-    return (await axios.get("get_public")).data;
+    var data = (await axios.get("get_public")).data;
+    data = data.map((item: any) => {
+      item.contact = JSON.parse(item.contact)
+      return item
+    })
+    return data
   },
   async getAll(): Promise<poolDB[]> {
     const store = useLoginStore()
-    const data = (await axios.get("get_all_customer", {
+    var data = (await axios.get("get_all_customer", {
       params: {
         token: store.token
       }
     })).data
+    data = data.map((item: any) => {
+      item.contact = JSON.parse(item.contact)
+      return item
+    })
     // 将 data.contact 中的奇数项为 contactContent 偶数 为
     return data;
   },
@@ -41,8 +50,9 @@ export default {
     });
     return data;
   },
-  async addCustomer(params: poolDB) {
+  async addCustomer(params: poolDB & { token: string }) {
     params.contact = JSON.stringify(params.contact)
+    params.token = useLoginStore().token as string
     const { data } = await axios.get("/add_customer", {
       params,
     });

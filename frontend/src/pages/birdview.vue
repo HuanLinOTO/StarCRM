@@ -114,25 +114,39 @@
           <!-- <template #suffix>/NaN</template> -->
         </el-statistic>
         <el-divider />
-        <el-popover
-          ref="popover"
-          title="扩展设置"
-          :width="500"
-          trigger="contextmenu"
-          content="this is content, this is content, this is content"
+        <el-button @click="saveCustomers" v-if="store.user.role == 'admin'">导出客户</el-button>
+        <el-button type="primary" @click="reportDialogVisible = true" v-if="store.user.role == 'admin'">导出报告</el-button>
+        <!-- exportReport -->
+        <el-dialog
+          v-model="reportDialogVisible"
+          title="导出信息"
+          width="30%"
+          align-center
         >
-          <template #reference>
-            <el-button type="primary" @click="exportReport" v-if="store.user.role == 'admin'">导出报告</el-button>
-            <!-- <el-button class="m-2">contextmenu to activate</el-button> -->
+          <div>
+            <el-form label-width="80px">
+              <el-form-item label="导出范围">
+                <el-date-picker
+                  v-model="reportDate"
+                  type="daterange"
+                  range-separator="到"
+                  start-placeholder="开始时间"
+                  end-placeholder="结束时间"
+                  size="small"
+                />
+              </el-form-item>
+            </el-form>
+            
+          </div>
+          <template #footer>
+            <span class="dialog-footer">
+              <el-button @click="reportDialogVisible = false">取消</el-button>
+              <el-button type="primary" @click="reportDialogVisible = false,exportReport(reportDate)">
+                确定
+              </el-button>
+            </span>
           </template>
-          <el-date-picker
-            v-model="reportDate"
-            type="datetimerange"
-            range-separator="To"
-            start-placeholder="Start date"
-            end-placeholder="End date"
-          />
-        </el-popover>
+        </el-dialog>
       </el-card>
     </el-col>
   </el-row>
@@ -141,12 +155,14 @@
 <script lang="ts" setup>
 import { useLoginStore } from "../store";
 import getStatistics, { Response } from "../api/statistics";
-import { computed, nextTick, onMounted, reactive, ref } from "vue";
+import { computed, nextTick, onMounted, reactive, ref, watch } from "vue";
 import * as echarts from "echarts"
 import { chartOptions, baseLine1, baseLine2, chartOptions2 } from "../utils/chartOptions"
 import groupStatisics from "../utils/groupStatisics"
 import user from "../api/user";
 import exportReport from "../utils/exportReport";
+import saveCustomers from "../utils/saveCustomer";
+
 const store = useLoginStore();
 
 var userDaliyCreation = ref(0)
@@ -174,6 +190,10 @@ function isTimeBetween5and630(): boolean {
 }
 
 const reportDate = ref()
+
+watch(reportDate,console.log)
+
+const reportDialogVisible = ref(false)
 
 const isShowWarning = computed(isTimeBetween5and630)
 
@@ -222,9 +242,12 @@ const getCustomerCount = (statisticsByDay: Record<string,any>) => {
   return customerCount
 }
 
+
+
 const getData = async () => {
   statistics.today = (await getStatistics({today: true,oid: store.user.id})).data;
   statistics.all = (await getStatistics({oid: store.user.id})).data;
+  
   const statisticsByDay = {
     // @ts-ignore
     creation: groupStatisics(statistics.all.creation),
@@ -232,6 +255,11 @@ const getData = async () => {
     sign: groupStatisics(statistics.all.sign),
   };
   
+  const dateArray = statistics.all.creation.map(item => item.date).sort()
+  reportDate.value = [dateArray[0],dateArray.reverse()[0]]
+  console.log(reportDate.value);
+  
+  // debugger
   // @ts-ignore
   const users = new Map((await user.getUser("name")).users.map((user) => [user.id, user.name]));
 
@@ -298,7 +326,7 @@ const getData = async () => {
         }
       ]
     })
-  },import.meta.env.DEV ? 1000 : 0)
+  },0)
 }
 getData();
 </script>

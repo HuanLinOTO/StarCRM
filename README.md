@@ -6,6 +6,7 @@ node dev
 ```
 ## For User
 ```
-node dev
+node build
+node ./backend/.output/server/index.mjs
 ```
 ~~编译不了，未知原因~~

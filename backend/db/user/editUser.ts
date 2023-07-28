@@ -9,5 +9,5 @@ export default async (
   let data = structuredClone(params);
   delete data.id;
   db.set("users", { id: params.id }, data);
-  return {code: 0, msg: "添加成功"}
+  return {code: 0, msg: "修改成功"}
 };

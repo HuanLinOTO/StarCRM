@@ -205,7 +205,7 @@ const getByProduction = (query: string, cb: any) => {
     data.value = toRaw(data.value).map((item: MaybeRef<poolDB[] & any> & any) => {
       // if exception there replace `item` to `toRaw(item)` may be solve the problem
       item.allData = structuredClone(item);
-      item.contactMethod = e2c.ContactMethod[item.contactMethod];
+      // item.contactMethod = e2c.ContactMethod[item.contactMethod];
       item.learnFrom = e2c.LearnFrom[item.learnFrom];
       item.status = e2c.Status[item.status];
       console.log(item.allData,"raw")
